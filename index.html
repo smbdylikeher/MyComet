@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The First Comet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #0b0c10;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1b2735 0%, #090a0f 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 1.5s ease;
+    }
+
+    .overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .overlay-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 3em;
+      margin-bottom: 20px;
+      color: #fff;
+      text-align: center;
+    }
+
+    .overlay-subtitle {
+      font-size: 1.2em;
+      color: #aaa;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .play-button {
+      padding: 12px 30px;
+      font-size: 1.1em;
+      color: #fff;
+      background-color: #1f2833;
+      border: 2px solid #45a29e;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .play-button:hover {
+      background-color: #45a29e;
+      color: #0b0c10;
+    }
+
+    .stars {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: twinkle 2s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    .comet {
+      position: absolute;
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, white, transparent);
+      top: 0;
+      left: 0;
+      transform: rotate(-45deg);
+      opacity: 0.6;
+      animation: cometFall 5s linear infinite;
+    }
+
+    @keyframes cometFall {
+      0% {
+        transform: translate(-10vw, -10vh) rotate(-45deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate(110vw, 110vh) rotate(-45deg);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3em;
+      color: #66fcf1;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1.2em;
+      color: #c5c6c7;
+      margin-bottom: 40px;
+    }
+
+    .photo-frame {
+      position: relative;
+      display: inline-block;
+      border: 2px solid #45a29e;
+      border-radius: 15px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 20px rgba(102, 252, 241, 0.3);
+    }
+
+    .photo-container {
+      position: relative;
+      width: 250px;
+      height: 250px;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .photo-placeholder {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 15px;
+      filter: brightness(0.95);
+      transition: all 0.5s ease;
+    }
+
+    .photo-placeholder:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+
+    .mini-star {
+      position: absolute;
+      background-color: #66fcf1;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: pulse 1.5s infinite alternate ease-in-out;
+    }
+
+    .mini-star.star-1 { width: 8px; height: 8px; top: -10px; left: 50%; }
+    .mini-star.star-2 { width: 6px; height: 6px; bottom: -10px; right: 20px; animation-delay: 0.3s; }
+    .mini-star.star-3 { width: 10px; height: 10px; top: 20px; left: -10px; animation-delay: 0.6s; }
+    .mini-star.star-4 { width: 5px; height: 5px; bottom: 15px; left: -5px; animation-delay: 0.9s; }
+
+    @keyframes pulse {
+      from { transform: scale(1); opacity: 0.7; }
+      to { transform: scale(1.5); opacity: 1; }
+    }
+
+    .narrative {
+      max-width: 700px;
+      margin: 50px auto;
+      line-height: 1.8;
+      color: #d1d1d1;
+      font-size: 1.1em;
+    }
+
+    .signature {
+      margin-top: 30px;
+      font-family: 'Playfair Display', serif;
+      color: #66fcf1;
+      font-size: 1.3em;
+    }
+
+    .button-container {
+      margin-top: 50px;
+    }
+
+    .reveal-button {
+      background: transparent;
+      color: #45a29e;
+      border: 2px solid #45a29e;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .reveal-button:hover {
+      background: #45a29e;
+      color: #0b0c10;
+    }
+
+    .message {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.8s ease;
+      font-size: 1.3em;
+      color: #fff;
+      margin-top: 30px;
+    }
+
+    .message.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .music-control {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(31, 40, 51, 0.8);
+      border: 2px solid #45a29e;
+      border-radius: 50px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .music-control:hover {
+      background: #45a29e;
+      color: #0b0c10;
+    }
+
+    .music-text {
+      margin-left: 10px;
+      font-size: 0.9em;
+    }
+
+    .music-icon {
+      width: 20px;
+      height: 20px;
+      position: relative;
+    }
+
+    .music-bars {
+      display: flex;
+      align-items: flex-end;
+      height: 100%;
+      justify-content: space-between;
+    }
+
+    .bar {
+      width: 3px;
+      background-color: #66fcf1;
+      animation: sound 0.6s infinite alternate;
+    }
+
+    .bar:nth-child(1) { animation-delay: 0s; }
+    .bar:nth-child(2) { animation-delay: 0.2s; }
+    .bar:nth-child(3) { animation-delay: 0.4s; }
+    .bar:nth-child(4) { animation-delay: 0.6s; }
+
+    @keyframes sound {
+      from { height: 4px; opacity: 0.8; }
+      to { height: 16px; opacity: 1; }
+    }
+
+    .music-bars.paused .bar {
+      animation-play-state: paused;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay" id="overlay">
+    <div class="overlay-text">The First Comet</div>
+    <div class="overlay-subtitle">Click to enter</div>
+    <button class="play-button" id="playButton">✨ Mulai Perjalanan</button>
+  </div>
+
+  <div class="music-control" id="musicControl">
+    <div class="music-icon">
+      <div class="music-bars" id="musicBars">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+    </div>
+    <span class="music-text" id="musicText">Playing</span>
+  </div>
+
+  <audio id="bgMusic" loop>
+    <source src="TheOvertunes - Bukan Sekedar Kata.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="stars" id="stars"></div>
+
+  <div class="container">
+    <div class="hero">
+      <div class="photo-frame">
+        <div class="mini-star star-1"></div>
+        <div class="mini-star star-2"></div>
+        <div class="mini-star star-3"></div>
+        <div class="mini-star star-4"></div>
+
+        <div class="photo-container">
+          <div class="corner-decoration top-left"></div>
+          <div class="corner-decoration top-right"></div>
+          <div class="corner-decoration bottom-left"></div>
+          <div class="corner-decoration bottom-right"></div>
+
+          <div class="photo-inner">
+            <img src="foto-eren.jpg" alt="Eren" class="photo-placeholder">
+          </div>
+        </div>
+      </div>
+
+      <h1>The First Comet</h1>
+      <p class="subtitle">A light that never fades</p>
+    </div>
+
+    <div class="narrative">
+      <p>Kenapa gitu ya dari segala kesibukan aku ada hal yang semangat buat aku pulang.</p>
+      <p>Eren datang kaya komet yang jatuh ke bumi. Tak terduga, tapi membawa cahaya yang tak pernah padam.</p>
+      <p>Suara eren, tawa kecil eren, cara eren bilang 'semangat ya' — semuanya kaya bintang yang menuntun aku pulang.</p>
+      <p>makasih ya udah jadi rumah.</p>
+      <p class="signature">— Ferdi.</p>
+    </div>
+
+    <div class="button-container">
+      <button class="reveal-button" onclick="revealMessage()">💫 Untuk Eren</button>
+      <div class="message" id="message">I was black and white before met you, and you my colour.</div>
+    </div>
+  </div>
+
+  <script>
+const bgMusic = document.getElementById('bgMusic');
+const playButton = document.getElementById('playButton');
+const overlay = document.getElementById('overlay');
+const musicControl = document.getElementById('musicControl');
+const musicBars = document.getElementById('musicBars');
+const musicText = document.getElementById('musicText');
+let isPlaying = false;
+
+playButton.addEventListener('click', function() {
+  overlay.classList.add('hidden');
+  bgMusic.play().then(() => {
+    isPlaying = true;
+  }).catch(error => {
+    console.log('Autoplay prevented:', error);
+  });
+});
+
+musicControl.addEventListener('click', function() {
+  if (isPlaying) {
+    bgMusic.pause();
+    musicBars.classList.add('paused');
+    musicText.textContent = 'Paused';
+  } else {
+    bgMusic.play().then(() => {
+      musicBars.classList.remove('paused');
+      musicText.textContent = 'Playing';
+    });
+  }
+  isPlaying = !isPlaying;
+});
+
+const starsContainer = document.getElementById('stars');
+for (let i = 0; i < 150; i++) {
+  const star = document.createElement('div');
+  star.className = 'star';
+  const size = Math.random() * 3 + 1 + 'px';
+  star.style.width = size;
+  star.style.height = size;
+  star.style.left = Math.random() * 100 + '%';
+  star.style.top = Math.random() * 100 + '%';
+  star.style.animationDelay = Math.random() * 3 + 's';
+  starsContainer.appendChild(star);
+}
+
+function createComet() {
+  const comet = document.createElement('div');
+  comet.className = 'comet';
+  comet.style.left = Math.random() * 50 + '%';
+  comet.style.top = Math.random() * 30 + '%';
+  comet.style.animation = cometFall ${Math.random() * 3 + 4}s linear;
+  document.body.appendChild(comet);
+  setTimeout(() => comet.remove(), 7000);
+}
+setInterval(createComet, 8000);
+setTimeout(createComet, 2000);
+
+function revealMessage() {
+  const message = document.getElementById('message');
+  message.classList.add('show');
+}
+  </script>
+</body>
+</html>
